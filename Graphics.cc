@@ -2,14 +2,16 @@
 
 #include <glad/glad.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <fstream>
 
-const void Shader::Enable() const {
+void Shader::Enable() const {
   glUseProgram(program_);
 }
 
-const void Shader::Disable() const {
+void Shader::Disable() const {
   glUseProgram(0);
 }
 
@@ -17,6 +19,27 @@ void Shader::UnloadShader() {
   glDeleteShader(vertex_shader_);
   glDeleteShader(fragment_shader_);
   glDeleteProgram(program_);
+}
+
+
+int32_t Shader::GetUniformLocation(const char* uniform) const {
+  return glGetUniformLocation(program_, uniform);
+}
+
+void Shader::SetUniformInt(int32_t location, int32_t value) const {
+  glUniform1i(location, value);
+}
+
+void Shader::SetUniformFloat(int32_t location, float value) const {
+  glUniform1f(location, value);
+}
+
+void Shader::SetUniformVec3(int32_t location, glm::vec3 value) const {
+  glUniform3f(location, value.x, value.y, value.z);
+}
+
+void Shader::SetUniformMatrix(int32_t location, glm::mat4 value) const {
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 static void CheckShaderError(uint32_t shader) {
@@ -73,7 +96,7 @@ void Graphics::ClearColor(Color color) {
 
 
 Primitive Graphics::CreatePrimitive(
-  const std::vector<float3>& vertices, 
+  const std::vector<glm::vec3>& vertices, 
   const std::vector<uint16_t>& indices
 ) {
   Primitive primitive;
@@ -88,14 +111,14 @@ Primitive Graphics::CreatePrimitive(
   glBindVertexArray(primitive.vao_);
 
   glBindBuffer(GL_ARRAY_BUFFER, primitive.vbo_);
-  glBufferData(GL_ARRAY_BUFFER, primitive.vertices_.size() * sizeof(float3), &primitive.vertices_[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, primitive.vertices_.size() * sizeof(glm::vec3), &primitive.vertices_[0], GL_STATIC_DRAW);
   
   if (primitive.indices_.size() > 0) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitive.ebo_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, primitive.indices_.size() * sizeof(uint16_t), &primitive.indices_[0], GL_STATIC_DRAW);
   }
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float3), nullptr);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
   glEnableVertexAttribArray(0);
 
   glBindVertexArray(0);

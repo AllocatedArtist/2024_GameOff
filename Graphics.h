@@ -1,12 +1,10 @@
 #ifndef GRAPHICS_H_
 #define GRAPHICS_H_
 
-#include <linalg/linalg.h>
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <cstdint>
-
-using namespace linalg::aliases;
 
 struct Color {
   uint8_t r;
@@ -16,7 +14,7 @@ struct Color {
 };
 
 struct Primitive {
-  std::vector<float3> vertices_;
+  std::vector<glm::vec3> vertices_;
   std::vector<uint16_t> indices_;
 
   uint32_t vbo_;
@@ -29,10 +27,16 @@ public:
   void LoadShader(const std::string& filename);
   void UnloadShader();
   
-  const void Enable() const;
-  const void Disable() const;
-  
-private:
+  void Enable() const;
+  void Disable() const;  
+
+  int32_t GetUniformLocation(const char* uniform) const;
+
+  void SetUniformInt(int32_t location, int32_t value) const;
+  void SetUniformFloat(int32_t location, float value) const;
+  void SetUniformVec3(int32_t location, glm::vec3 value) const;
+  void SetUniformMatrix(int32_t location, glm::mat4 value) const;
+private:  
   uint32_t program_;  
   uint32_t vertex_shader_;
   uint32_t fragment_shader_;
@@ -46,7 +50,7 @@ public:
   static void RenderPrimitiveIndexed(const Primitive& primitive, const Shader& shader);
   
   static Primitive CreatePrimitive(
-    const std::vector<float3>& vertices, 
+    const std::vector<glm::vec3>& vertices, 
     const std::vector<uint16_t>& indices = {}
   );
 

@@ -1,4 +1,4 @@
-#include <linalg/linalg.h>
+#include <glm/glm.hpp>
 
 #include "App.h"
 #include "Graphics.h"
@@ -13,13 +13,24 @@ int main(void) {
   Shader shader;
   shader.LoadShader("../shaders/model.glsl");
 
-  Primitive triangle = Graphics::CreatePrimitive({ float3(0.0, 0.5, 0.0 ), float3(-0.5, -0.5, 0.0 ), float3(0.5, -0.5, 0.0 ) });
+  Primitive triangle = Graphics::CreatePrimitive(
+    { 
+      glm::vec3(-0.5, 0.5, 0.0), 
+      glm::vec3(-0.5, -0.5, 0.0), 
+      glm::vec3(0.5, -0.5, 0.0),
+      glm::vec3(0.5, 0.5, 0.0)
+    },
+    {
+      0, 1, 2, 
+      2, 3, 0  
+    }
+  );
 
   while (app.IsWindowOpen()) {
     app.BeginFrame();
+    
     Graphics::ClearColor(better_white);
-
-    Graphics::RenderPrimitive(triangle, shader);
+    Graphics::RenderPrimitiveIndexed(triangle, shader);
     
     app.EndFrame();
   }
