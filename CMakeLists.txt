@@ -14,7 +14,7 @@ add_executable(
   Graphics.cc
 )
 
-target_include_directories(PlayGround PUBLIC vendor/glfw/include vendor/linalg)
+target_include_directories(PlayGround PUBLIC vendor/glfw/include vendor/glm)
 
 target_link_libraries(PlayGround Glad glfw3)
 target_link_directories(PlayGround PUBLIC lib/src)
