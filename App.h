@@ -9,9 +9,11 @@ public:
   App(uint32_t width, uint32_t height, const char* title);
   ~App();
   
-  bool IsWindowOpen();
+  bool IsWindowOpen() const;
   void BeginFrame();
   void EndFrame();
+
+  double GetTime() const;
 private:
   uint32_t width_;
   uint32_t height_;

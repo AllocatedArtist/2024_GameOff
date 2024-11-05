@@ -27,19 +27,27 @@ int32_t Shader::GetUniformLocation(const char* uniform) const {
 }
 
 void Shader::SetUniformInt(int32_t location, int32_t value) const {
+  Enable();
   glUniform1i(location, value);
+  Disable();
 }
 
 void Shader::SetUniformFloat(int32_t location, float value) const {
+  Enable();
   glUniform1f(location, value);
+  Disable();
 }
 
 void Shader::SetUniformVec3(int32_t location, glm::vec3 value) const {
+  Enable();
   glUniform3f(location, value.x, value.y, value.z);
+  Disable();
 }
 
 void Shader::SetUniformMatrix(int32_t location, glm::mat4 value) const {
+  Enable();
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+  Disable();
 }
 
 static void CheckShaderError(uint32_t shader) {

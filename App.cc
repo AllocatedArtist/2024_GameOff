@@ -45,8 +45,12 @@ App::~App() {
   glfwTerminate();
 }
 
-bool App::IsWindowOpen() {
+bool App::IsWindowOpen() const {
   return !glfwWindowShouldClose(window_);
+}
+
+double App::GetTime() const {
+  return glfwGetTime();
 }
 
 void App::BeginFrame() {
