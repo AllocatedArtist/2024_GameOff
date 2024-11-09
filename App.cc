@@ -5,8 +5,22 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+
+struct {
+  std::vector<KeyInt> updated_keys_;
+  bool keys_[GLFW_KEY_MENU];
+} Global;
+
 void WindowResize(GLFWwindow* window, int32_t width, int32_t height) {
   glViewport(0, 0, width, height);
+}
+
+void KeyCallback(GLFWwindow* window, KeyInt key, int32_t scancode, int32_t action, int32_t mods) {
+  bool state = action != GLFW_RELEASE;
+  if (Global.keys_[key] != state) {
+    Global.keys_[key] = state;
+    Global.updated_keys_.push_back(key);
+  }
 }
 
 App::App(uint32_t width, uint32_t height, const char* title) : width_(width), height_(height), title_(title) {  
@@ -38,6 +52,7 @@ App::App(uint32_t width, uint32_t height, const char* title) : width_(width), he
   glViewport(0, 0, width_, height_);
 
   glfwSetWindowSizeCallback(window_, WindowResize);
+  glfwSetKeyCallback(window_, KeyCallback);
 }
 
 App::~App() {
@@ -45,7 +60,20 @@ App::~App() {
   glfwTerminate();
 }
 
-bool App::IsWindowOpen() const {
+bool App::Update() {
+  glfwPollEvents();
+
+  for (KeyInt updated_key: Global.updated_keys_) {
+    std::optional<std::string> action = input_manager_.GetAction(Key(updated_key));
+    if (action) {
+      std::string action_str = action.value();
+      ActionType action_type = Global.keys_[updated_key] ? ActionType::kPress: ActionType::kRelease;
+      Action new_action = Action(action_str, action_type);
+      input_manager_.actions_.insert_or_assign(action_str, new_action);
+    }
+  }
+  Global.updated_keys_.clear();
+  
   return !glfwWindowShouldClose(window_);
 }
 
@@ -54,11 +82,18 @@ double App::GetTime() const {
 }
 
 void App::BeginFrame() {
-  glfwPollEvents();
   glClear(GL_COLOR_BUFFER_BIT);
-
 }
 
 void App::EndFrame() {
   glfwSwapBuffers(window_);
+}
+
+void App::CloseWindow() const {
+  glfwSetWindowShouldClose(window_, GLFW_TRUE);
+}
+
+
+InputManager& App::GetInputManager() {
+  return input_manager_;
 }

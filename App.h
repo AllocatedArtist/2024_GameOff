@@ -4,16 +4,24 @@
 #include <string>
 #include <cstdint>
 
+#include "InputManager.h"
+
 class App {
 public:
   App(uint32_t width, uint32_t height, const char* title);
   ~App();
   
-  bool IsWindowOpen() const;
+  bool Update();
   void BeginFrame();
   void EndFrame();
 
   double GetTime() const;
+
+  void CloseWindow() const;
+
+  InputManager& GetInputManager();
+private:
+  InputManager input_manager_;
 private:
   uint32_t width_;
   uint32_t height_;
@@ -21,9 +29,6 @@ private:
   
   struct GLFWwindow* window_;
 };
-
-
-
 
 
 
