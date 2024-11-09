@@ -12,6 +12,7 @@ add_executable(
   main.cc 
   App.cc
   Graphics.cc
+  InputManager.cc
 )
 
 target_include_directories(PlayGround PUBLIC vendor/glfw/include vendor/glm)
