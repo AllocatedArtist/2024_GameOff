@@ -16,10 +16,10 @@ void InputManager::AddAction(Key key, const std::string& action) {
   action_map_[KeyInt(key)] = action;
 }
 
-bool InputManager::IsActionPressed(const std::string& action) {
-  return actions_[action].type_ == ActionType::kPress;
+bool InputManager::IsActionPressed(const std::string& action) const {
+  return actions_.at(action).type_ == ActionType::kPress;
 }
 
-bool InputManager::IsActionReleased(const std::string& action) {
-  return actions_[action].type_ == ActionType::kRelease;
+bool InputManager::IsActionReleased(const std::string& action) const {
+  return actions_.at(action).type_ == ActionType::kRelease;
 }

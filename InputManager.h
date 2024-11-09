@@ -150,8 +150,8 @@ public:
   
   void AddAction(Key key, const std::string& action);
   
-  bool IsActionPressed(const std::string& action);
-  bool IsActionReleased(const std::string& action);
+  bool IsActionPressed(const std::string& action) const;
+  bool IsActionReleased(const std::string& action) const;
 
   std::optional<std::string> GetAction(Key key) const;
 private:
