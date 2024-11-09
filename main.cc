@@ -31,17 +31,29 @@ int main(void) {
   int32_t uniform_rot_loc = shader.GetUniformLocation("rotation");
 
   glm::mat4 rotation(1.0);
+
+  InputManager& input = app.GetInputManager();
+  input.AddAction(Key::kKeyEscape, "Quit");
+  input.AddAction(Key::kKey6, "Quit");
+
+  input.AddAction(Key::kKeyRight, "SpinRight");
+  input.AddAction(Key::kKeyLeft, "SpinLeft");
   
-  while (app.IsWindowOpen()) {
+  while (app.Update()) {    
+    
+    if (input.IsActionReleased("Quit")) {
+      app.CloseWindow();
+    }
+
     app.BeginFrame();
 
-    float scale = cosf(app.GetTime());
+    if (input.IsActionPressed("SpinRight")) {
+      rotation = glm::rotate(rotation, glm::radians(-0.01f), glm::vec3(0.0, 0.0, 1.0));
+    } else if (input.IsActionPressed("SpinLeft")) {
+      rotation = glm::rotate(rotation, glm::radians(0.01f), glm::vec3(0.0, 0.0, 1.0));
+    }
 
-    float time_f = static_cast<float>(app.GetTime());
-
-    rotation = glm::rotate(rotation, glm::radians(time_f * 0.01f), glm::vec3(0.0, 0.0, 1.0));
-
-    shader.SetUniformFloat(uniform_size_loc, scale);
+    shader.SetUniformFloat(uniform_size_loc, 1);
     shader.SetUniformMatrix(uniform_rot_loc, rotation);
     
     Graphics::ClearColor(better_white);
