@@ -7,7 +7,6 @@
 #include "App.h"
 #include "Graphics.h"
 
-
 int main(void) {
 
   App app(1600, 1480, "Graphics");
@@ -19,10 +18,10 @@ int main(void) {
 
   Primitive triangle = Graphics::CreatePrimitive(
     { 
-      glm::vec3(-1.0, 1.0, 0.0), 
-      glm::vec3(-1.0, -1.0, 0.0), 
-      glm::vec3(1.0, -1.0, 0.0),
-      glm::vec3(1.0, 1.0, 0.0)
+      Vertex { glm::vec3(-1.0, 1.0, 0.0), glm::vec2(0.0, 1.0) }, 
+      Vertex { glm::vec3(-1.0, -1.0, 0.0), glm::vec2(0.0, 0.0) }, 
+      Vertex { glm::vec3(1.0, -1.0, 0.0), glm::vec2(1.0, 0.0) },
+      Vertex { glm::vec3(1.0, 1.0, 0.0), glm::vec2(1.0, 1.0) }
     },
     {
       0, 1, 2, 
@@ -41,6 +40,15 @@ int main(void) {
 
   float dt = 1.f / 60.f;
   float accumulator = 0.f;
+
+  Texture shrek;
+  shrek.LoadFromFile("../assets/shrek_map.png", true);
+
+  int32_t u_texture0 = shader.GetUniformLocation("texture0");
+
+  shader.Enable();
+  shader.SetUniformInt(u_texture0, 0);
+  shader.Disable();
     
   while (app.Update()) {        
     float frame_time = app.GetDeltaTime();
@@ -57,11 +65,20 @@ int main(void) {
     app.BeginFrame();
     
     Graphics::ClearColor(better_white);
-    Graphics::RenderPrimitiveIndexed(triangle, shader);
+
+    shader.Enable();
+    shrek.Bind(0);
+    
+    Graphics::RenderPrimitiveIndexed(triangle);
+    
+    shrek.Unbind();
+    shader.Disable();
     
     app.EndFrame();    
   }
 
+  shrek.UnloadTexture();
+  
   Graphics::DestroyPrimitive(triangle);
   shader.UnloadShader();
   
