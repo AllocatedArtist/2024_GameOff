@@ -19,9 +19,18 @@ public:
 
   void CloseWindow() const;
 
+  int32_t GetScreenWidth() const;
+  int32_t GetScreenHeight() const;
+
   InputManager& GetInputManager();
+
+  float GetDeltaTime() const;
 private:
   InputManager input_manager_;
+
+  float current_time_;
+  float previous_time_;
+  float delta_;
 private:
   uint32_t width_;
   uint32_t height_;
