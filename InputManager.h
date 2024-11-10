@@ -131,9 +131,8 @@ enum class Key : uint16_t {
 using KeyInt = int32_t;
 
 enum class ActionType {
-  kNone,
+  kRelease,
   kPress,
-  kRelease
 };
 
 struct Action {
@@ -150,10 +149,14 @@ public:
   
   void AddAction(Key key, const std::string& action);
   
-  bool IsActionPressed(const std::string& action) const;
-  bool IsActionReleased(const std::string& action) const;
+  bool IsActionUp(const std::string& action) const;
+  bool IsActionDown(const std::string& action) const;
+  
+  void RegisterInputs();
 
   std::optional<std::string> GetAction(Key key) const;
+
+  bool ActionExists(const std::string& action) const;
 private:
   friend class App;
   std::unordered_map<std::string, Action> actions_;
