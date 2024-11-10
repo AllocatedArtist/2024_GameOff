@@ -6,6 +6,8 @@
 #include <vector>
 #include <cstdint>
 
+#include <tiny_gltf.h>
+
 struct Color {
   uint8_t r;
   uint8_t g;
@@ -13,8 +15,13 @@ struct Color {
   uint8_t a;
 };
 
+struct Vertex {
+  glm::vec3 pos_;
+  glm::vec2 tex_coords_;
+};
+
 struct Primitive {
-  std::vector<glm::vec3> vertices_;
+  std::vector<Vertex> vertices_;
   std::vector<uint16_t> indices_;
 
   uint32_t vbo_;
@@ -42,15 +49,26 @@ private:
   uint32_t fragment_shader_;
 };
 
+class Texture {
+public:
+  void LoadFromFile(const std::string& file, bool flip = false);
+  void UnloadTexture();
+  
+  void Bind(int32_t slot);
+  void Unbind();
+private:
+  uint32_t id_;
+};
+
 class Graphics {
 public:  
   static void ClearColor(Color color);
   
-  static void RenderPrimitive(const Primitive& primitive, const Shader& shader);
-  static void RenderPrimitiveIndexed(const Primitive& primitive, const Shader& shader);
+  static void RenderPrimitive(const Primitive& primitive);
+  static void RenderPrimitiveIndexed(const Primitive& primitive);
   
   static Primitive CreatePrimitive(
-    const std::vector<glm::vec3>& vertices, 
+    const std::vector<Vertex>& vertices, 
     const std::vector<uint16_t>& indices = {}
   );
 
