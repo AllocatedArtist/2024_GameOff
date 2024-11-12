@@ -72,6 +72,10 @@ App::App(uint32_t width, uint32_t height, const char* title) : width_(width), he
   glfwSetKeyCallback(window_, KeyCallback);
 
   current_time_ = GetTime();  
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 App::~App() {
@@ -105,7 +109,7 @@ double App::GetTime() const {
 }
 
 void App::BeginFrame() {  
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void App::EndFrame() {
